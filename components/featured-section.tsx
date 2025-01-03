@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Product {
