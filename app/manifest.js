@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server'
-
 export default function manifest() {
   return {
     name: "Natural Beauty",
@@ -22,8 +20,4 @@ export default function manifest() {
       }
     ]
   }
-}
-
-export async function GET() {
-  return NextResponse.json(manifest())
 }
