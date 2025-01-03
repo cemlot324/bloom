@@ -1,34 +1,49 @@
-import { notFound } from "next/navigation"
-import { getProductById } from "@/lib/actions"
 import { ProductView } from "@/components/product-view"
+import { connectToDatabase } from "@/lib/mongodb"
+import { ObjectId } from "mongodb"
+import { notFound } from "next/navigation"
+import { getBaseUrl } from "@/lib/utils"
 
-interface ProductPageProps {
-  params: {
-    id: string
+async function getProduct(id: string) {
+  try {
+    // Use direct database connection instead of API route for server components
+    const db = await connectToDatabase()
+    const product = await db.collection("products").findOne({ 
+      _id: new ObjectId(id) 
+    })
+    
+    if (!product) {
+      return null
+    }
+
+    return {
+      ...product,
+      _id: product._id.toString()
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error)
+    return null
   }
 }
 
 export default async function ProductPage({ 
   params 
-}: ProductPageProps) {
-  try {
-    const product = await getProductById(String(params.id))
+}: { 
+  params: { id: string } 
+}) {
+  const product = await getProduct(params.id)
 
-    if (!product) {
-      notFound()
-    }
-
-    return <ProductView product={product} />
-  } catch (error) {
-    console.error("Error:", error)
+  if (!product) {
     notFound()
   }
+
+  return <ProductView product={product} />
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: ProductPageProps) {
+export async function generateMetadata({ params }: { params: { id: string } }) {
   try {
-    const product = await getProductById(String(params.id))
+    const product = await getProduct(params.id)
     return {
       title: `${product.title} - Bloom`,
       description: product.description,

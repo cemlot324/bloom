@@ -1,7 +1,7 @@
 export default function manifest() {
   return {
-    name: "Natural Beauty",
-    short_name: "Beauty",
+    name: "Bloom",
+    short_name: "Bloom",
     description: "Your unique complex of natural components",
     start_url: "/",
     display: "standalone",

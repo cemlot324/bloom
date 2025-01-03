@@ -5,45 +5,39 @@ if (!process.env.MONGODB_URI) {
 }
 
 const uri = process.env.MONGODB_URI
-const options = {}
-
-interface GlobalWithMongo {
-  mongo: {
-    conn: MongoClient | null;
-    promise: Promise<MongoClient> | null;
-  };
+const options = {
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 }
 
-// Define the global type
-declare global {
-  var mongo: {
-    conn: MongoClient | null;
-    promise: Promise<MongoClient> | null;
-  };
-}
+let client: MongoClient
+let clientPromise: Promise<MongoClient>
 
-const globalWithMongo = global as GlobalWithMongo
-
-if (!globalWithMongo.mongo) {
-  globalWithMongo.mongo = {
-    conn: null,
-    promise: null,
+if (process.env.NODE_ENV === 'development') {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR
+  let globalWithMongo = global as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>
   }
+
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri, options)
+    globalWithMongo._mongoClientPromise = client.connect()
+  }
+  clientPromise = globalWithMongo._mongoClientPromise
+} else {
+  // In production mode, it's best to not use a global variable
+  client = new MongoClient(uri, options)
+  clientPromise = client.connect()
 }
 
 export async function connectToDatabase() {
-  if (globalWithMongo.mongo.conn) {
-    return globalWithMongo.mongo.conn.db()
-  }
-
-  if (!globalWithMongo.mongo.promise) {
-    globalWithMongo.mongo.promise = MongoClient.connect(uri, options)
-  }
-
   try {
-    const client = await globalWithMongo.mongo.promise
-    globalWithMongo.mongo.conn = client
-    return client.db()
+    const client = await clientPromise
+    const db = client.db() // This will use the database specified in your connection string
+    console.log('Successfully connected to database')
+    return db
   } catch (e) {
     console.error('Failed to connect to database:', e)
     throw e
