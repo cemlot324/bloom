@@ -9,7 +9,6 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit"
-    
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -32,6 +31,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.96",
     "@types/node": "^20.11.17",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",

@@ -9,14 +9,20 @@ import {
   CardFooter,
 } from "@/components/ui/card"
 
+interface NotificationConstructor {
+  permission: NotificationPermission;
+  new(title: string, options?: NotificationOptions): Notification;
+  requestPermission(): Promise<NotificationPermission>;
+}
+
 export function Notification() {
   const [showNotification, setShowNotification] = useState(false)
   const [permission, setPermission] = useState<NotificationPermission>("default")
 
   useEffect(() => {
     if ("Notification" in window) {
-      setPermission(Notification.permission)
-      if (Notification.permission === "default") {
+      setPermission((window.Notification as NotificationConstructor).permission)
+      if ((window.Notification as NotificationConstructor).permission === "default") {
         setShowNotification(true)
       }
     }
@@ -24,10 +30,10 @@ export function Notification() {
 
   const requestPermission = async () => {
     if ("Notification" in window) {
-      const permission = await Notification.requestPermission()
+      const permission = await (window.Notification as NotificationConstructor).requestPermission()
       setPermission(permission)
       if (permission === "granted") {
-        new Notification("Welcome!", {
+        new (window.Notification as NotificationConstructor)("Welcome!", {
           body: "Thank you for enabling notifications!",
         })
       }

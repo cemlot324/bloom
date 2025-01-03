@@ -10,7 +10,7 @@ interface UploadProviderProps {
 
 export function UploadProvider({ onChange, endpoint }: UploadProviderProps) {
   return (
-    <UploadButton
+    <UploadButton<OurFileRouter, typeof endpoint>
       endpoint={endpoint}
       onClientUploadComplete={(res) => {
         if (res?.[0]?.url) {
@@ -19,6 +19,7 @@ export function UploadProvider({ onChange, endpoint }: UploadProviderProps) {
       }}
       onUploadError={(error: Error) => {
         console.error("Error uploading:", error);
+        onChange(undefined);
       }}
     />
   );

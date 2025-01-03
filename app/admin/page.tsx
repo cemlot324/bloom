@@ -36,6 +36,28 @@ const defaultCategories = [
   "Probiotics"
 ];
 
+interface NavItemProps {
+  icon: React.ReactNode;  // or the specific type your icon uses
+  text: string;
+  active?: boolean;
+  onClick: () => void;
+}
+
+function NavItem({ icon, text, active = false, onClick }: NavItemProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        w-full flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100
+        ${active ? 'bg-gray-100 border-r-4 border-blue-500' : ''}
+      `}
+    >
+      <span className="mr-3">{icon}</span>
+      <span>{text}</span>
+    </button>
+  );
+}
+
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("products");
@@ -329,20 +351,5 @@ export default function AdminDashboard() {
         </div>
       </main>
     </div>
-  );
-}
-
-function NavItem({ icon, text, active = false, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        w-full flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100
-        ${active ? 'bg-gray-100 border-r-4 border-blue-500' : ''}
-      `}
-    >
-      <span className="mr-3">{icon}</span>
-      <span>{text}</span>
-    </button>
   );
 } 

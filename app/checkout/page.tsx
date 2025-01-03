@@ -1,7 +1,7 @@
 "use client"
 
 import { useCart } from "@/lib/context/cart-context"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,12 @@ export default function CheckoutPage() {
     cvv: "",
   })
 
+  useEffect(() => {
+    if (state.items.length === 0) {
+      router.push("/")
+    }
+  }, [state.items.length, router])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsProcessing(true)
@@ -38,7 +44,6 @@ export default function CheckoutPage() {
   }
 
   if (state.items.length === 0) {
-    router.push("/")
     return null
   }
 
