@@ -63,6 +63,14 @@ export default async function ProductPage({
 export async function generateMetadata({ params }: { params: { id: string } }) {
   try {
     const product = await getProduct(params.id)
+    
+    if (!product) {
+      return {
+        title: 'Product - Bloom',
+        description: 'Product details',
+      }
+    }
+
     return {
       title: `${product.title} - Bloom`,
       description: product.description,
