@@ -28,8 +28,8 @@ export default function Home() {
         <div className="border-t border-black" />
       </div>
       <ProductGrid />
-      <BottomBanner />
       <Newsletter />
+      <BottomBanner />
       <Footer />
       <Notification />
     </main>

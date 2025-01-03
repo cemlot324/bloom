@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['utfs.io'], // Add uploadthing domain
-  },
-  experimental: {
-    serverActions: true,
+    domains: ['uploadthing.com', 'utfs.io'],
   },
 }
 

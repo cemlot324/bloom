@@ -11,7 +11,7 @@ import {
 
 export function Notification() {
   const [showNotification, setShowNotification] = useState(false)
-  const [ setPermission] = useState<NotificationPermission>("default")
+  const [permission, setPermission] = useState<NotificationPermission>("default")
 
   useEffect(() => {
     if ("Notification" in window) {
