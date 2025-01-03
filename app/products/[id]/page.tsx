@@ -2,11 +2,22 @@ import { ProductView } from "@/components/product-view"
 import { connectToDatabase } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 import { notFound } from "next/navigation"
-import { getBaseUrl } from "@/lib/utils"
+// import { getBaseUrl } from "@/lib/utils"
 
-async function getProduct(id: string) {
+// Define the Product type to match your MongoDB schema
+interface Product {
+  _id: string
+  title: string
+  description: string
+  price: number
+  images: string[]
+  category: string
+  features?: string[]
+  ingredients?: string[]
+}
+
+async function getProduct(id: string): Promise<Product | null> {
   try {
-    // Use direct database connection instead of API route for server components
     const db = await connectToDatabase()
     const product = await db.collection("products").findOne({ 
       _id: new ObjectId(id) 
@@ -16,9 +27,17 @@ async function getProduct(id: string) {
       return null
     }
 
+    // Transform the MongoDB document to match our Product type
     return {
       ...product,
-      _id: product._id.toString()
+      _id: product._id.toString(),
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      images: product.images,
+      category: product.category,
+      features: product.features || [],
+      ingredients: product.ingredients || []
     }
   } catch (error) {
     console.error("Error fetching product:", error)
